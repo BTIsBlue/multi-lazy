@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.staticfile.org/vue/2.6.14/vue.min.js"></script>
+  <style>
+    #app {
+      display: grid;
+      grid-gap: 10px;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    .lazy-mode {
+      display: grid;
+      place-items: center;
+      height: 200px;
+      color: white;
+      background-color: red;
+    }
+    .lazy-mode--activated {
+      background-color: blue;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div
+      class="lazy-mode"
+      :key="id"
+      :class="{'lazy-mode--activated': loadedList.includes(id)}"
+      v-for="id in idList"
+      v-multi-lazy:[id]="startReq">
+      {{ id }}
+    </div>
+  </div>
+  <script type="module">
+  import multiLazy from '../lib'
+  Vue.use(multiLazy, 3)
+  new Vue({
+    el: '#app',
+    data() {
+      return {
+        idList: Array(100).fill(0).map((_, i)=> i),
+        loadedList: []
+      }
+    },
+    methods: {
+      startReq (requestIds) {
+        console.log('become to load requestIds', requestIds)
+        this.loadedList.push(...requestIds)
+      }
+    }
+  })
+  </script>
+</body>
+</html>
